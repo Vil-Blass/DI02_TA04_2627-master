@@ -1,0 +1,7 @@
+{
+  "name": "DI02_TA04_2627",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

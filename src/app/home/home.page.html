@@ -1,0 +1,191 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Guía de Restaurantes Euskadi</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="abrirModalAnadir()"
+        [disabled]="cargando() || importando()"
+        title="Añadir un restaurante nuevo">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Añadir
+      </ion-button>
+      <ion-button
+        (click)="confirmarImportacion()"
+        [disabled]="cargando() || importando()"
+        title="Importar restaurantes del JSON local a Firebase">
+        @if (importando()) {
+          <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+        }
+        Importar JSON
+      </ion-button>
+      <ion-button
+        (click)="cargarDatos()"
+        [disabled]="cargando() || importando()"
+        title="Cargar restaurantes desde Firebase">
+        @if (cargando()) {
+          <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+        }
+        Cargar datos
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Añadir mensaje cuando no hay datos -->
+  @if (!hayDatos()) {
+    <ion-item lines="none" color="light" style="border-radius: 8px;">
+      <ion-label class="ion-text-wrap">
+        Pulsa <strong>Cargar datos</strong> para ver los restaurantes disponibles.
+        Una vez cargados, podrás filtrar por nombre, territorio y localidad.
+      </ion-label>
+    </ion-item>
+  }
+
+  <!-- Filtros -->
+  <ion-grid>
+    <ion-row class="ion-align-items-center ion-justify-content-start">
+      <!-- Filtro de búsqueda -->
+      <ion-col size="12" size-md="3">
+        <ion-item>
+          <ion-input
+            label="Buscar"
+            placeholder="Buscar por nombre..."
+            [value]="textoBusqueda()"
+            [disabled]="!hayDatos()"
+            (ionInput)="textoBusqueda.set($event.detail.value ?? '')">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+
+      <!-- Filtro de territorio -->
+      <ion-col size="12" size-md="3">
+        <!--Podemos usar un ion-label para el título del filtro, pero podemos también usar el label del ion-select
+          --De esta manera podemos hacer click encima de todo el ion-item para mostrar los valores. 
+          --Si ponemos el ion-label fuera del ion-item, el click solo se activará al hacer click en el texto del label, lo que no es tan cómodo para el usuario
+          -->
+        <!--<ion-label>Territorio</ion-label>-->
+        <ion-item>
+          <ion-select
+            label="Territorio"
+            labelPlacement="start"
+            placeholder="Todos"
+            [value]="territorioSeleccionado()"
+            [disabled]="!hayDatos()"
+            (ionChange)="onTerritorioChange($event.detail.value)">
+            @for (t of territoriosFiltrados(); track t) {
+              <ion-select-option [value]="t">{{ t }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-col>
+
+      <!-- Filtro de localidad (dependiente del territorio) -->
+      <ion-col size="12" size-md="6">
+        <!--Podemos usar un ion-label para el título del filtro, pero podemos también usar el label del ion-select
+          --De esta manera podemos hacer click encima de todo el ion-item para mostrar los valores. 
+          --Si ponemos el ion-label fuera del ion-item, el click solo se activará al hacer click en el texto del label, lo que no es tan cómodo para el usuario
+          -->
+        <!--Si tenemos muchas localidades seleccionadas, estas se recortan mediante..., por eso añadimos [title] para mostrar un tooltip cuando ponemos el ratón sobre ella -->
+        <!--<ion-label>Localidad</ion-label>-->
+        <ion-item>          
+          <ion-select
+            label="Localidad"
+            labelPlacement="start"
+            placeholder="Todas"
+            multiple="true"
+            cancelText="Cancelar"
+            okText="Aceptar"
+            [value]="localidadesSeleccionadas()"
+            [title]="localidadesSeleccionadas().length > 0 ? localidadesSeleccionadas().join(', ') : 'Todas'"
+            [disabled]="!hayDatos()"
+            (ionChange)="onLocalidadesChange($event.detail.value)">
+            @for (loc of localidadesFiltradasPorTerritorio(); track loc) {
+              <ion-select-option [value]="loc">{{ loc }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- Contador de restaurantes filtrados -->
+  @if (hayDatos()) {
+    <ion-item lines="none">
+      <ion-label>
+        Mostrando <strong>{{ restaurantesFiltrados().length }}</strong>
+        de <strong>{{ restaurantesCargados().length }}</strong> restaurantes
+        @if (restaurantesFiltrados().length === 0 && hayFiltrosActivos()) {
+          · <em>Prueba a cambiar los filtros</em>
+        }
+      </ion-label>
+    </ion-item>
+  }
+
+  <!-- Tabla de restaurantes -->
+  @if (restaurantesFiltrados().length > 0) {
+    <div class="table-wrapper">
+      <table class="restaurantes-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Localidad</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Territorio</th>
+            <th>Web</th>
+            <th>Estrellas Michelin</th>
+            <th>Soles Repsol</th>
+            <th>Borrar</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of restaurantesFiltrados(); track r.documentName) {
+            <tr>
+              <td class="col-nombre">{{ r.documentName }}</td>
+              <td>{{ r.locality }}</td>
+              <td class="col-direccion">{{ r.address }}</td>
+              <td class="col-phone">{{ r.phone }}</td>
+              <td>{{ r.territory }}</td>
+              <td class="center">
+                @if (r.web) {
+                  <a [href]="r.web" target="_blank" [title]="r.web" class="web-link">
+                    Enlace
+                  </a>
+                }
+              </td>
+              <td class="center">
+                {{ estrellasMichelin(r) > 0 ? estrellasMichelin(r) : '-' }}
+              </td>
+              <td class="center">
+                {{ repsolSoles(r) > 0 ? repsolSoles(r) : '-' }}
+              </td>
+              <td class="center">
+                <ion-button fill="clear" color="danger" size="small"
+                  title="Borrar restaurante"
+                  (click)="borrarRestaurante(r)">
+                  Borrar
+                </ion-button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <!-- Mensaje cuando no hay restaurantes que coincidan con los filtros -->
+    @if (hayDatos()) {
+      <ion-item lines="none" color="warning" style="margin-top: 16px; border-radius: 8px;">
+        <ion-label class="ion-text-wrap">
+          Ningún restaurante coincide con los filtros.
+          <strong style="cursor: pointer; text-decoration: underline;"
+            (click)="limpiarTodosFiltros()">
+            Limpiar filtros
+          </strong>
+        </ion-label>
+      </ion-item>
+    }
+  }
+
+</ion-content>
