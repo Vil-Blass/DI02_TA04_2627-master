@@ -2,7 +2,11 @@
   <ion-toolbar>
     <ion-title>Añadir Restaurante</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="cancelar()" [disabled]="guardando()">Cancelar</ion-button>
+      <!-- CAMBIO: OFRECE CANCELAR Y CERRAR EL MODAL CON UN ICONO ESTÁNDAR. -->
+      <ion-button (click)="cancelar()" [disabled]="guardando()" title="Cerrar formulario">
+        <ion-icon slot="start" name="close-outline"></ion-icon>
+        Cancelar
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -13,7 +17,7 @@
     <ion-list lines="full">
 
       <!-- Nombre -->
-      <ion-item>
+      <ion-item [color]="form.get('documentName')?.invalid && form.get('documentName')?.touched ? 'danger' : undefined">
         <ion-input
           label="Nombre *"
           labelPlacement="stacked"
@@ -23,12 +27,14 @@
       </ion-item>
       @if (form.get('documentName')?.invalid && form.get('documentName')?.touched) {
         <ion-text color="danger" class="ion-padding-start">
-          <small>El nombre es obligatorio</small>
+          <small>{{ form.get('documentName')?.hasError('required') || form.get('documentName')?.hasError('pattern')
+            ? 'El nombre es obligatorio'
+            : 'Introduce un nombre válido' }}</small>
         </ion-text>
       }
 
       <!-- Territorio -->
-      <ion-item>
+      <ion-item [color]="form.get('territory')?.invalid && form.get('territory')?.touched ? 'danger' : undefined">
         <ion-input
           label="Territorio *"
           labelPlacement="stacked"
@@ -38,7 +44,9 @@
       </ion-item>
       @if (form.get('territory')?.invalid && form.get('territory')?.touched) {
         <ion-text color="danger" class="ion-padding-start">
-          <small>El territorio es obligatorio</small>
+          <small>{{ form.get('territory')?.hasError('required') || form.get('territory')?.hasError('pattern')
+            ? 'El territorio es obligatorio'
+            : 'Introduce un territorio válido' }}</small>
         </ion-text>
       }
 
@@ -85,9 +93,9 @@
       </ion-item>
 
       <!-- Estrellas Michelin -->
-      <ion-item>
+      <ion-item [color]="form.get('michelinStar')?.invalid && form.get('michelinStar')?.touched ? 'danger' : undefined">
         <ion-input
-          label="Estrellas Michelin"
+          label="Estrellas Michelin (0-3)"
           labelPlacement="stacked"
           type="number"
           min="0"
@@ -95,11 +103,16 @@
           formControlName="michelinStar">
         </ion-input>
       </ion-item>
+      @if (form.get('michelinStar')?.invalid && form.get('michelinStar')?.touched) {
+        <ion-text color="danger" class="ion-padding-start">
+          <small>Introduce un número entero entre 0 y 3</small>
+        </ion-text>
+      }
 
       <!-- Soles Repsol -->
-      <ion-item>
+      <ion-item [color]="form.get('repsolSun')?.invalid && form.get('repsolSun')?.touched ? 'danger' : undefined">
         <ion-input
-          label="Soles Repsol"
+          label="Soles Repsol (0-3)"
           labelPlacement="stacked"
           type="number"
           min="0"
@@ -107,10 +120,16 @@
           formControlName="repsolSun">
         </ion-input>
       </ion-item>
+      @if (form.get('repsolSun')?.invalid && form.get('repsolSun')?.touched) {
+        <ion-text color="danger" class="ion-padding-start">
+          <small>Introduce un número entero entre 0 y 3</small>
+        </ion-text>
+      }
 
     </ion-list>
 
     <div class="ion-padding-top">
+      <!-- CAMBIO: DESHABILITA EL BOTÓN Y MUESTRA EL ESTADO DE GUARDADO. -->
       <ion-button expand="block" type="submit" [disabled]="form.invalid || guardando()">
         @if (guardando()) {
           <ion-spinner name="crescent" slot="start"></ion-spinner>

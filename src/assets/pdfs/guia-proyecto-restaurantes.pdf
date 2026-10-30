@@ -1,0 +1,208 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Length 1714 >>
+stream
+1 1 1 rg 0 0 595 842 re f
+0.05 0.09 0.16 rg 0 540 595 302 re f
+0.17 0.78 0.68 rg 55 758 54 6 re f
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 720 Tm (GUIA DEL PROYECTO) Tj ET
+BT /F2 30 Tf 1 1 1 rg 1 0 0 1 55 658 Tm (Gu\355a de Restaurantes) Tj ET
+BT /F2 30 Tf 1 1 1 rg 1 0 0 1 55 617 Tm (Euskadi) Tj ET
+BT /F1 13 Tf 0.82 0.87 0.93 rg 1 0 0 1 55 576 Tm (Aplicaci\363n web para consultar y gestionar) Tj ET
+BT /F1 13 Tf 0.82 0.87 0.93 rg 1 0 0 1 55 555 Tm (restaurantes, territorios y distinciones gastron\363micas.) Tj ET
+BT /F2 9 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 495 Tm (DESCRIPCI\323N GENERAL) Tj ET
+BT /F1 11 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 470 Tm (Este proyecto ofrece una interfaz para cargar restaurantes desde Firebase, explorar) Tj ET
+BT /F1 11 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 453 Tm (sus datos y mantener un cat\341logo actualizado. La pantalla principal combina b\372squeda,) Tj ET
+BT /F1 11 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 436 Tm (filtros geogr\341ficos y una tabla de resultados.) Tj ET
+0.93 0.96 0.98 rg 55 335 485 78 re f
+BT /F2 9 Tf 0.17 0.78 0.68 rg 1 0 0 1 72 390 Tm (EN ESTA GU\315A) Tj ET
+BT /F1 10 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 369 Tm (Funciones principales, flujo de uso, organizaci\363n t\351cnica) Tj ET
+BT /F1 10 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 352 Tm (y comandos habituales de desarrollo.) Tj ET
+BT /F2 9 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 297 Tm (TECNOLOG\315A) Tj ET
+BT /F1 10 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 275 Tm (Angular 20  |  Ionic 8  |  AngularFire / Firebase  |  Capacitor) Tj ET
+BT /F1 9 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 80 Tm (Documento de orientaci\363n basado en el c\363digo fuente del proyecto.) Tj ET
+BT /F1 9 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 62 Tm (30 de octubre de 2026) Tj ET
+
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+7 0 obj
+<< /Length 3820 >>
+stream
+0.17 0.78 0.68 rg 0 830 595 12 re f
+BT /F2 9 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 809 Tm (GU\315A DEL PROYECTO) Tj ET
+BT /F2 8 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 784 Tm (USO DE LA APLICACI\323N) Tj ET
+0.93 0.96 0.98 RG 1 w 55 48 m 540 48 l S
+BT /F1 8 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 31 Tm (Gu\355a de Restaurantes Euskadi  |  30 de octubre de 2026) Tj ET
+BT /F2 8 Tf 0.32 0.39 0.48 rg 1 0 0 1 526 31 Tm (2) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 751 Tm (1. Cargar y explorar el cat\341logo) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 743 m 540 743 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 722 Tm (Al abrir la aplicaci\363n, el listado a\372n no est\341 cargado. Pulsa "Cargar" para consultar) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 707 Tm (los documentos de la colecci\363n de restaurantes en Firestore. La interfaz muestra el) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 692 Tm (estado de carga y confirma el resultado.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 667 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 667 Tm (La b\372squeda encuentra restaurantes por nombre.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 647 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 647 Tm (El filtro de territorio limita la lista a un territorio.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 627 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 627 Tm (La localidad admite una o varias selecciones y depende del territorio elegido.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 607 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 607 Tm (Los filtros activos se muestran como chips: cada chip quita su filtro y la X) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 592 Tm (limpia todos.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 572 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 572 Tm (El contador indica cu\341ntos restaurantes coinciden. Si no hay resultados, se ofrece) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 557 Tm (limpiar filtros.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 529 Tm (2. Leer y ordenar los resultados) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 521 m 540 521 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 500 Tm (La tabla muestra nombre, localidad, direcci\363n, tel\351fono, territorio, web, estrellas) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 485 Tm (Michelin y soles Repsol. Las webs se abren en una pesta\361a nueva.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 463 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 463 Tm (Pulsa Nombre, Localidad, Territorio o una columna de distinciones para ordenar.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 443 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 443 Tm (Al volver a pulsar la misma columna se invierte el orden; el icono indica la) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 428 Tm (direcci\363n.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 400 Tm (3. Importar el cat\341logo local) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 392 m 540 392 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 371 Tm (El bot\363n "Importar datos" reemplaza el contenido de Firebase con los registros incluidos) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 356 Tm (en el JSON local del proyecto. Antes de continuar se solicita confirmaci\363n; durante el) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 341 Tm (proceso se indican las fases de borrado y carga.) Tj ET
+1 0.96 0.88 rg 55 248 485 82 re f
+BT /F2 9 Tf 0.65 0.34 0.05 rg 1 0 0 1 72 306 Tm (IMPORTANTE) Tj ET
+BT /F1 9.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 285 Tm (La importaci\363n sustituye los datos de la colecci\363n. Confirma que el JSON y) Tj ET
+BT /F1 9.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 271 Tm (el entorno de Firebase son los adecuados antes de usar esta acci\363n.) Tj ET
+
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 7 0 R >>
+endobj
+9 0 obj
+<< /Length 4142 >>
+stream
+0.17 0.78 0.68 rg 0 830 595 12 re f
+BT /F2 9 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 809 Tm (GU\315A DEL PROYECTO) Tj ET
+BT /F2 8 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 784 Tm (GESTI\323N Y ORGANIZACI\323N) Tj ET
+0.93 0.96 0.98 RG 1 w 55 48 m 540 48 l S
+BT /F1 8 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 31 Tm (Gu\355a de Restaurantes Euskadi  |  30 de octubre de 2026) Tj ET
+BT /F2 8 Tf 0.32 0.39 0.48 rg 1 0 0 1 526 31 Tm (3) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 751 Tm (4. A\361adir un restaurante) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 743 m 540 743 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 722 Tm (Pulsa "A\361adir" para abrir el formulario. Nombre y territorio son obligatorios;) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 707 Tm (localidad, direcci\363n, tel\351fono y web completan la ficha. Las estrellas Michelin y los) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 692 Tm (soles Repsol aceptan enteros entre 0 y 3.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 669 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 669 Tm (Los errores de validaci\363n se muestran junto al campo correspondiente.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 649 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 649 Tm (Mientras se guarda, se bloquean los envios repetidos y se muestra un indicador.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 629 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 629 Tm (Al guardar correctamente, se cierra el formulario y se actualiza el listado.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 600 Tm (5. Borrar y recuperar) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 592 m 540 592 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 571 Tm (El borrado solicita confirmaci\363n antes de eliminar el registro de Firebase. Despu\351s) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 556 Tm (ofrece una acci\363n "Deshacer" durante seis segundos. La restauraci\363n reutiliza el) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 541 Tm (identificador original del documento.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 518 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 518 Tm (Las operaciones que no deben coincidir se bloquean mientras otra esta activa.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 498 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 498 Tm (Los errores se registran en la consola y se notifican en la interfaz.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 469 Tm (6. Documentos de apoyo) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 461 m 540 461 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 440 Tm (El selector "Ver PDF" abre en una pesta\361a nueva los documentos disponibles que se) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 425 Tm (incluyen en la aplicaci\363n.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 401 Tm (Organizaci\363n t\351cnica) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 393 m 540 393 l S
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 372 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 372 Tm (home/: p\341gina principal, estados, filtros, ordenaci\363n y acciones del usuario.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 352 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 352 Tm (components/add-restaurante-modal/: formulario para crear fichas.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 332 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 332 Tm (services/restaurante.service.ts: operaciones de lectura, alta, borrado e) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 317 Tm (importaci\363n en Firestore.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 297 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 297 Tm (interface/restaurante.ts: estructura tipada de los datos de cada restaurante.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 277 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 277 Tm (assets/datos/restaurantes.json: fuente local utilizada para la importaci\363n.) Tj ET
+BT /F2 11 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 257 Tm (-) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 71 257 Tm (assets/pdfs/: documentos de apoyo que puede abrir el selector.) Tj ET
+
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 9 0 R >>
+endobj
+11 0 obj
+<< /Length 2853 >>
+stream
+0.17 0.78 0.68 rg 0 830 595 12 re f
+BT /F2 9 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 809 Tm (GU\315A DEL PROYECTO) Tj ET
+BT /F2 8 Tf 0.17 0.78 0.68 rg 1 0 0 1 55 784 Tm (DESARROLLO Y RECOMENDACIONES) Tj ET
+0.93 0.96 0.98 RG 1 w 55 48 m 540 48 l S
+BT /F1 8 Tf 0.32 0.39 0.48 rg 1 0 0 1 55 31 Tm (Gu\355a de Restaurantes Euskadi  |  30 de octubre de 2026) Tj ET
+BT /F2 8 Tf 0.32 0.39 0.48 rg 1 0 0 1 526 31 Tm (4) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 751 Tm (Puesta en marcha) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 743 m 540 743 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 722 Tm (Requisitos: Node.js y npm compatibles con las dependencias del proyecto. Desde la) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 707 Tm (carpeta raiz:) Tj ET
+0.05 0.09 0.16 rg 55 610 485 91 re f
+BT /F2 11 Tf 1 1 1 rg 1 0 0 1 74 664 Tm (npm ci) Tj ET
+BT /F2 11 Tf 1 1 1 rg 1 0 0 1 74 643 Tm (npm start) Tj ET
+BT /F2 11 Tf 1 1 1 rg 1 0 0 1 74 622 Tm (npm run build) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 574 Tm (El primer comando instala las dependencias fijadas por el proyecto; el segundo inicia el) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 559 Tm (servidor de desarrollo; el tercero genera la compilacion.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 533 Tm (Servicios y datos) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 525 m 540 525 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 504 Tm (La aplicaci\363n utiliza Firebase Authentication y Firestore. Las operaciones de lectura y) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 489 Tm (escritura requieren que el proyecto de Firebase est\351 correctamente configurado y que sus) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 474 Tm (reglas permitan las acciones esperadas.) Tj ET
+BT /F2 15 Tf 0.05 0.09 0.16 rg 1 0 0 1 55 448 Tm (Nota de seguridad) Tj ET
+0.17 0.78 0.68 RG 1.5 w 55 440 m 540 440 l S
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 419 Tm (La configuraci\363n de acceso debe revisarse antes de distribuir o publicar el proyecto. No) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 404 Tm (se incluyen credenciales en este documento. Mantener contrase\361as dentro del c\363digo) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 389 Tm (cliente no es seguro: ret\355ralas del repositorio, r\363talas si ya se compartieron y valida) Tj ET
+BT /F1 10.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 55 374 Tm (las reglas de Firebase.) Tj ET
+0.93 0.96 0.98 rg 55 274 485 82 re f
+BT /F2 9 Tf 0.17 0.78 0.68 rg 1 0 0 1 72 333 Tm (RESUMEN) Tj ET
+BT /F1 9.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 312 Tm (La aplicacion combina un catalogo conectado a Firebase con datos locales) Tj ET
+BT /F1 9.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 298 Tm (de importacion, herramientas para localizar restaurantes y acciones de) Tj ET
+BT /F1 9.5 Tf 0.12 0.18 0.27 rg 1 0 0 1 72 284 Tm (gestion con estados y avisos visibles.) Tj ET
+
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 11 0 R >>
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000141 00000 n 
+0000000238 00000 n 
+0000000340 00000 n 
+0000002106 00000 n 
+0000002242 00000 n 
+0000006114 00000 n 
+0000006250 00000 n 
+0000010444 00000 n 
+0000010581 00000 n 
+0000013487 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+13625
+%%EOF

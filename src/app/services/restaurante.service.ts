@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, getDocs, addDoc, deleteDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, getDocs, addDoc, deleteDoc, doc, setDoc } from '@angular/fire/firestore';
 import { Restaurante } from '../interface/restaurante';
 
 @Injectable({ providedIn: 'root' })
@@ -39,5 +39,14 @@ export class RestauranteService {
   async add(restaurante: Restaurante): Promise<void> {
     const col = collection(this.firestore, this.COLECCION);
     await addDoc(col, restaurante);
+  }
+
+  // CAMBIO: RESTAURA EL DOCUMENTO CON SU ID ORIGINAL PARA EVITAR DUPLICADOS.
+  async restore(restaurante: Restaurante): Promise<void> {
+    const { id, ...datos } = restaurante;
+    if (!id) {
+      throw new Error('No se puede restaurar un restaurante sin ID.');
+    }
+    await setDoc(doc(this.firestore, this.COLECCION, id), datos);
   }
 }

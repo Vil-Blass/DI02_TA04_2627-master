@@ -1,9 +1,11 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, signal, computed, inject, ElementRef, ViewChild } from '@angular/core';
 import { IonicModule, AlertController, ModalController, ToastController, LoadingController } from '@ionic/angular';
 import { Restaurante } from '../interface/restaurante';
 import { RestauranteService } from '../services/restaurante.service';
 import { AddRestauranteModalComponent } from '../components/add-restaurante-modal/add-restaurante-modal.component';
 import restaurantesJSON from '../../assets/datos/restaurantes.json';
+
+type ColumnaOrdenable = 'documentName' | 'locality' | 'territory' | 'michelinStar' | 'repsolSun';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +17,18 @@ import restaurantesJSON from '../../assets/datos/restaurantes.json';
 export class HomePage {
 
   // ############################### REGION DATOS ###############################
+
+  // CAMBIO: DEFINE LOS DOCUMENTOS PDF QUE SE PUEDEN ABRIR DESDE EL SELECTOR.
+  readonly pdfs = [
+    { nombre: 'Mejoras de usabilidad', url: 'assets/pdfs/Chat_mejoras_usabilidad.pdf' },
+    { nombre: 'Chat', url: 'assets/pdfs/Chat.pdf' },
+    { nombre: 'Guía de proyecto', url: 'assets/pdfs/guia-proyecto-restaurantes.pdf ' },
+    
+  ];
+  video = 'assets/videos/cambios-explicados.mp4';
+  videoAbierto = signal(false);
+
+  @ViewChild('videoPlayer') private videoPlayer?: ElementRef<HTMLVideoElement>;
 
   private toastCtrl = inject(ToastController);
   private alertCtrl = inject(AlertController);
@@ -34,18 +48,40 @@ export class HomePage {
   // true durante la importación del JSON a Firebase
   importando = signal(false);
 
+  // CAMBIO: INDICA CUANDO SE ESTÁ BORRANDO UN RESTAURANTE.
+  borrando = signal(false);
+
+  // CAMBIO: GUARDA LA COLUMNA Y DIRECCIÓN DE ORDENACIÓN ELEGIDAS.
+  sortColumna = signal<ColumnaOrdenable>('documentName');
+  sortDireccion = signal<'asc' | 'desc'>('asc');
+
+  // CAMBIO: TEXTO VISIBLE MIENTRAS SE CARGAN RESTAURANTES DESDE FIREBASE.
+  estadoCarga = computed(() => this.cargando() ? 'Cargando restaurantes...' : '');
+
   // true cuando hay al menos un restaurante cargado
   hayDatos = computed(() => this.restaurantesCargados().length > 0);
 
+  cerrarVideo() {
+    this.videoPlayer?.nativeElement.pause();
+    this.videoAbierto.set(false);
+  }
+
   // Carga los restaurantes desde Firebase y muestra un toast de confirmación
   async cargarDatos() {
+    // CAMBIO: EVITA INICIAR OTRA OPERACIÓN MIENTRAS HAYA UNA ACTIVA.
+    if (this.cargando() || this.importando() || this.borrando()) return;
+
     this.cargando.set(true);
     try {
       const datos = await this.restauranteService.getAll();
       this.restaurantesCargados.set(datos);
       this.mostrarToast(`${datos.length} restaurantes cargados`, 'success');
-    } catch {
-      this.mostrarToast('Error al cargar los datos desde Firebase', 'danger');
+    } catch (error) {
+      // CAMBIO: REGISTRA EL ERROR PARA FACILITAR SU DIAGNÓSTICO.
+      console.error('Error al cargar restaurantes desde Firebase:', error);
+      this.mostrarToast(this.esErrorPermiso(error)
+        ? 'Sin permisos en Firebase. Revisa las reglas de seguridad.'
+        : 'Error al cargar datos. Revisa tu conexión a internet.', 'danger');
     } finally {
       this.cargando.set(false);
     }
@@ -53,6 +89,9 @@ export class HomePage {
 
   // Muestra un diálogo de confirmación antes de iniciar la importación
   async confirmarImportacion() {
+    // CAMBIO: EVITA ABRIR LA CONFIRMACIÓN DURANTE OTRA OPERACIÓN.
+    if (this.cargando() || this.importando() || this.borrando()) return;
+
     const alert = await this.alertCtrl.create({
       header: 'Confirmar importación',
       subHeader: `Se importarán ${this.restaurantes.length} restaurantes`,
@@ -67,22 +106,29 @@ export class HomePage {
 
   // Borra todos los datos de Firebase y sube los restaurantes del JSON local
   async importarJSON() {
+    // CAMBIO: EVITA IMPORTACIONES O ACCIONES SIMULTÁNEAS.
+    if (this.cargando() || this.importando() || this.borrando()) return;
+
     this.importando.set(true);
-    const loading = await this.loadingCtrl.create({
-      message: 'Borrando datos anteriores...',
-      backdropDismiss: false
-    });
-    await loading.present();
+    let loading: HTMLIonLoadingElement | undefined;
     try {
+      // CAMBIO: MUESTRA UN OVERLAY BLOQUEANTE Y ACTUALIZA SU MENSAJE POR FASE.
+      loading = await this.loadingCtrl.create({
+        message: 'Borrando datos...',
+        backdropDismiss: false
+      });
+      await loading.present();
       await this.restauranteService.deleteAll();
       loading.message = 'Subiendo restaurantes...';
       await this.restauranteService.addAll(this.restaurantes);
       await loading.dismiss();
+      loading = undefined;
       this.mostrarToast(`${this.restaurantes.length} restaurantes importados correctamente`, 'success');
-    } catch (error: any) {
-      await loading.dismiss();
+    } catch (error: unknown) {
+      if (loading) await loading.dismiss();
+      // CAMBIO: MANTIENE EL DETALLE DEL ERROR EN LA CONSOLA Y AVISA AL USUARIO.
       console.error('Error al importar JSON:', error);
-      const msg = error?.code === 'permission-denied'
+      const msg = this.esErrorPermiso(error)
         ? 'Sin permisos en Firebase. Revisa las reglas de seguridad.'
         : 'Error al importar. Revisa tu conexión a internet.';
       this.mostrarToast(msg, 'danger');
@@ -93,6 +139,9 @@ export class HomePage {
 
   // Muestra confirmación y borra el restaurante indicado de Firebase y de la lista local
   async borrarRestaurante(r: Restaurante) {
+    // CAMBIO: EVITA INICIAR EL BORRADO DURANTE OTRA OPERACIÓN.
+    if (this.cargando() || this.importando() || this.borrando()) return;
+
     const alert = await this.alertCtrl.create({
       header: 'Confirmar borrado',
       subHeader: `¿Deseas borrar el restaurante ${r.documentName}?`,
@@ -106,12 +155,32 @@ export class HomePage {
               this.mostrarToast('No se puede borrar: el restaurante no tiene ID.', 'danger');
               return;
             }
+            if (this.cargando() || this.importando() || this.borrando()) return;
+
+            this.borrando.set(true);
             try {
-              await this.restauranteService.delete(r.id);
-              this.restaurantesCargados.update(lista => lista.filter(x => x.id !== r.id));
-              this.mostrarToast(`${r.documentName} eliminado`, 'success');
-            } catch {
-              this.mostrarToast('Error al borrar el restaurante', 'danger');
+              // CAMBIO: MUESTRA EL OVERLAY DURANTE EL BORRADO Y LO CIERRA AUNQUE HAYA ERROR.
+              let loading: HTMLIonLoadingElement | undefined;
+              try {
+                loading = await this.loadingCtrl.create({
+                  message: 'Borrando restaurante...',
+                  backdropDismiss: false
+                });
+                await loading.present();
+                await this.restauranteService.delete(r.id);
+                this.restaurantesCargados.update(lista => lista.filter(x => x.id !== r.id));
+              } finally {
+                if (loading) await loading.dismiss();
+              }
+              await this.mostrarToastConDeshacer(r);
+            } catch (error) {
+              // CAMBIO: REGISTRA EL ERROR Y MUESTRA UN AVISO PERSISTENTE.
+              console.error(`Error al borrar el restaurante ${r.documentName}:`, error);
+              this.mostrarToast(this.esErrorPermiso(error)
+                ? 'Sin permisos para borrar en Firebase. Revisa las reglas de seguridad.'
+                : 'Error al borrar el restaurante. Revisa tu conexión.', 'danger');
+            } finally {
+              this.borrando.set(false);
             }
           }
         }
@@ -122,8 +191,12 @@ export class HomePage {
 
   // Abre el modal para añadir un restaurante nuevo
   async abrirModalAnadir() {
+    // CAMBIO: IMPIDE ABRIR EL FORMULARIO DURANTE OTRA OPERACIÓN DE FIREBASE.
+    if (this.cargando() || this.importando() || this.borrando()) return;
+
     const modal = await this.modalCtrl.create({
       component: AddRestauranteModalComponent,
+      cssClass: 'restaurant-form-modal',
     });
     await modal.present();
     const { role } = await modal.onWillDismiss();
@@ -136,12 +209,71 @@ export class HomePage {
   private async mostrarToast(mensaje: string, color: 'success' | 'danger' | 'warning') {
     const toast = await this.toastCtrl.create({
       message: mensaje,
-      duration: 9000,
+      // CAMBIO: LOS ERRORES SON PERSISTENTES Y LOS AVISOS DE ÉXITO DURAN 3 SEGUNDOS.
+      duration: color === 'success' ? 3000 : 0,
       color,
-      position: 'top',
+      position: 'bottom',
       buttons: [{ text: 'cerrar', role: 'cancel' }]
     });
     await toast.present();
+  }
+
+  // CAMBIO: PERMITE RECUPERAR UN RESTAURANTE DURANTE 6 SEGUNDOS TRAS BORRARLO.
+  private async mostrarToastConDeshacer(restaurante: Restaurante) {
+    const toast = await this.toastCtrl.create({
+      message: `${restaurante.documentName} eliminado`,
+      duration: 6000,
+      color: 'success',
+      position: 'bottom',
+      buttons: [
+        {
+          text: 'Deshacer',
+          handler: () => {
+            void this.deshacerBorrado(restaurante);
+          }
+        },
+        { text: 'Cerrar', role: 'cancel' }
+      ]
+    });
+    await toast.present();
+  }
+
+  // CAMBIO: RESTAURA EL DOCUMENTO BORRADO Y NOTIFICA SI FALLA.
+  private async deshacerBorrado(restaurante: Restaurante) {
+    if (this.cargando() || this.importando() || this.borrando()) {
+      this.mostrarToast('No se puede deshacer mientras hay otra operación en curso.', 'danger');
+      return;
+    }
+
+    this.borrando.set(true);
+    let loading: HTMLIonLoadingElement | undefined;
+    try {
+      loading = await this.loadingCtrl.create({
+        message: 'Restaurando restaurante...',
+        backdropDismiss: false
+      });
+      await loading.present();
+      await this.restauranteService.restore(restaurante);
+      this.restaurantesCargados.update(lista =>
+        lista.some(item => item.id === restaurante.id) ? lista : [...lista, restaurante]
+      );
+      await loading.dismiss();
+      loading = undefined;
+      this.mostrarToast(`${restaurante.documentName} restaurado`, 'success');
+    } catch (error) {
+      if (loading) await loading.dismiss();
+      console.error(`Error al deshacer el borrado de ${restaurante.documentName}:`, error);
+      this.mostrarToast(this.esErrorPermiso(error)
+        ? 'Sin permisos para restaurar en Firebase. Revisa las reglas de seguridad.'
+        : 'Error al deshacer el borrado. Revisa tu conexión.', 'danger');
+    } finally {
+      this.borrando.set(false);
+    }
+  }
+
+  private esErrorPermiso(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && 'code' in error &&
+      error.code === 'permission-denied';
   }
 
 
@@ -160,6 +292,26 @@ export class HomePage {
   limpiarTodosFiltros() {
     this.textoBusqueda.set('');
     this.territorioSeleccionado.set('');
+    this.localidadesSeleccionadas.set([]);
+  }
+
+  // CAMBIO: ELIMINA CADA FILTRO DESDE SU CHIP O CONTROL INDIVIDUAL.
+  eliminarTextoBusqueda() {
+    this.textoBusqueda.set('');
+  }
+
+  eliminarTerritorio() {
+    if (this.localidadesSeleccionadas().length > 0) return;
+    this.territorioSeleccionado.set('');
+  }
+
+  eliminarLocalidad(localidad: string) {
+    this.localidadesSeleccionadas.update(localidades =>
+      localidades.filter(item => item !== localidad)
+    );
+  }
+
+  limpiarLocalidades() {
     this.localidadesSeleccionadas.set([]);
   }
 
@@ -215,7 +367,7 @@ export class HomePage {
 
     const territorio = this.territorioSeleccionado().toLowerCase().trim();
     if (territorio) {
-      lista = lista.filter(r => r.territory.toLowerCase().trim() === territorio);
+      lista = lista.filter(r => r.territory?.toLowerCase().trim() === territorio);
     }
 
     const seleccionadas = this.localidadesSeleccionadas();
@@ -223,8 +375,38 @@ export class HomePage {
       lista = lista.filter(r => seleccionadas.includes(r.locality?.trim() || ''));
     }
 
-    return lista;
+    const columna = this.sortColumna();
+    const direccion = this.sortDireccion() === 'asc' ? 1 : -1;
+    return [...lista].sort((a, b) => {
+      const valorA = this.valorOrden(a, columna);
+      const valorB = this.valorOrden(b, columna);
+      if (typeof valorA === 'number' && typeof valorB === 'number') {
+        return (valorA - valorB) * direccion;
+      }
+      return String(valorA).localeCompare(String(valorB), 'es', { sensitivity: 'base' }) * direccion;
+    });
   });
+
+  // CAMBIO: ORDENA AL PULSAR UNA COLUMNA Y ALTERNA SU SENTIDO AL REPETIR.
+  cambiarOrden(columna: ColumnaOrdenable) {
+    if (this.sortColumna() === columna) {
+      this.sortDireccion.update(direccion => direccion === 'asc' ? 'desc' : 'asc');
+    } else {
+      this.sortColumna.set(columna);
+      this.sortDireccion.set('asc');
+    }
+  }
+
+  iconoOrden(columna: ColumnaOrdenable): string {
+    if (this.sortColumna() !== columna) return 'swap-vertical-outline';
+    return this.sortDireccion() === 'asc' ? 'arrow-up-outline' : 'arrow-down-outline';
+  }
+
+  private valorOrden(restaurante: Restaurante, columna: ColumnaOrdenable): string | number {
+    if (columna === 'michelinStar') return this.estrellasMichelin(restaurante);
+    if (columna === 'repsolSun') return this.repsolSoles(restaurante);
+    return restaurante[columna] ?? '';
+  }
 
   // ############################### REGION AUXILIARES ###############################
 
@@ -236,5 +418,15 @@ export class HomePage {
   // Devuelve el número de soles Repsol (0 si no tiene o el valor no es numérico)
   repsolSoles(r: Restaurante): number {
     return Number(r.repsolSun) || 0;
+  }
+
+  // CAMBIO: GENERA LOS ELEMENTOS VISUALES DE LAS ESTRELLAS Y SOLES.
+  rangoPremios(cantidad: number): number[] {
+    return Array.from({ length: Math.min(3, Math.max(0, Math.floor(cantidad))) }, (_, index) => index);
+  }
+
+  // CAMBIO: ABRE EN UNA PESTAÑA NUEVA EL PDF SELECCIONADO.
+  verPDF(url: string): void {
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }

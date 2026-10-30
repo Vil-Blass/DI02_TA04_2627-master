@@ -19,15 +19,16 @@ export class AddRestauranteModalComponent {
 
   guardando = signal(false);
 
+  // CAMBIO: VALIDA QUE LOS PREMIOS SEAN NÚMEROS ENTEROS ENTRE 0 Y 3.
   form = this.fb.nonNullable.group({
-    documentName: ['', Validators.required],
-    territory:    ['', Validators.required],
+    documentName: ['', [Validators.required, Validators.pattern(/\S/)]],
+    territory:    ['', [Validators.required, Validators.pattern(/\S/)]],
     locality:     [''],
     address:      [''],
     phone:        [''],
     web:          [''],
-    michelinStar: ['0'],
-    repsolSun:    ['0'],
+    michelinStar: ['0', [Validators.required, Validators.min(0), Validators.max(3), Validators.pattern(/^[0-3]$/)]],
+    repsolSun:    ['0', [Validators.required, Validators.min(0), Validators.max(3), Validators.pattern(/^[0-3]$/)]],
   });
 
   cancelar() {
@@ -35,6 +36,9 @@ export class AddRestauranteModalComponent {
   }
 
   async guardar() {
+    // CAMBIO: EVITA ENVIAR EL FORMULARIO MÁS DE UNA VEZ.
+    if (this.guardando()) return;
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -94,12 +98,19 @@ export class AddRestauranteModalComponent {
       };
       await this.restauranteService.add(restaurante);
       await this.modalCtrl.dismiss(restaurante, 'confirm');
-    } catch {
+    } catch (error) {
+      // CAMBIO: REGISTRA EL ERROR Y MANTIENE EL AVISO VISIBLE HASTA CERRARLO.
+      console.error('Error al guardar el restaurante en Firebase:', error);
+      const esErrorPermiso = typeof error === 'object' && error !== null &&
+        'code' in error && error.code === 'permission-denied';
       const toast = await this.toastCtrl.create({
-        message: 'Error al guardar el restaurante en Firebase',
-        duration: 3000,
+        message: esErrorPermiso
+          ? 'Sin permisos para guardar en Firebase. Revisa las reglas de seguridad.'
+          : 'Error al guardar el restaurante. Revisa tu conexión a internet.',
+        duration: 0,
         color: 'danger',
         position: 'bottom',
+        buttons: [{ text: 'cerrar', role: 'cancel' }],
       });
       await toast.present();
     } finally {

@@ -1,46 +1,98 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Guía de Restaurantes Euskadi</ion-title>
+<ion-header class="cabeza">
+  <ion-toolbar class="nav_cabeza">
+    <ion-title class="titulo_nav">
+      <i class="fa-solid fa-utensils fa-xl"></i>
+      <h1>Guía de Restaurantes Euskadi</h1>
+    </ion-title>
+    <!-- CAMBIO: BLOQUEA LAS ACCIONES Y MUESTRA SPINNERS DURANTE LA CARGA O IMPORTACIÓN. -->
     <ion-buttons slot="end">
-      <ion-button
-        (click)="abrirModalAnadir()"
-        [disabled]="cargando() || importando()"
+      <ion-button (click)="videoAbierto.set(true)" title="Ver vídeo explicativo">
+        <ion-icon slot="start" name="videocam-outline"></ion-icon>
+        Ver vídeo
+      </ion-button>
+
+      <!-- CAMBIO: PERMITE ELEGIR Y ABRIR UNO DE LOS PDF DISPONIBLES. -->
+      <ion-select label="Ver PDF" placeholder="Selecciona un documento" (ionChange)="verPDF($event.detail.value)">
+        @for (pdf of pdfs; track pdf.url) {
+        <ion-select-option [value]="pdf.url">{{ pdf.nombre }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-button (click)="abrirModalAnadir()" [disabled]="cargando() || importando() || borrando()"
         title="Añadir un restaurante nuevo">
         <ion-icon slot="start" name="add-outline"></ion-icon>
-        Añadir
+        <i class="fa-solid fa-circle-plus fa-xl"></i>
+        <h4>Añadir</h4>
       </ion-button>
-      <ion-button
-        (click)="confirmarImportacion()"
-        [disabled]="cargando() || importando()"
-        title="Importar restaurantes del JSON local a Firebase">
+      <ion-button (click)="confirmarImportacion()" [disabled]="cargando() || importando() || borrando()"
+        title="Importar restaurantes del archivo local al servidor">
         @if (importando()) {
-          <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+        <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+        } @else {
+        <ion-icon slot="start" name="cloud-upload-outline"></ion-icon>
         }
-        Importar JSON
+        <i class="fa-solid fa-fire-flame-curved fa-xl"></i>
+        <h4>Importar datos</h4>
       </ion-button>
-      <ion-button
-        (click)="cargarDatos()"
-        [disabled]="cargando() || importando()"
-        title="Cargar restaurantes desde Firebase">
+      <ion-button (click)="cargarDatos()" [disabled]="cargando() || importando() || borrando()"
+        title="Cargar restaurantes desde el servidor">
         @if (cargando()) {
-          <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+        <ion-spinner name="crescent" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+        } @else {
+        <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
         }
-        Cargar datos
+        <i class="fa-solid fa-diagram-next fa-xl"></i>
+        <h4>Cargar</h4>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<ion-modal [isOpen]="videoAbierto()" (didDismiss)="cerrarVideo()" cssClass="video-modal">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Vídeo explicativo</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cerrarVideo()" aria-label="Cerrar vídeo">
+            <ion-icon slot="start" name="close-outline"></ion-icon>
+            Cerrar
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <figure class="video-player">
+        <video #videoPlayer controls aria-label="Vídeo explicativo de los cambios de la aplicación">
+          <source [src]="video" type="video/mp4">
+          <track kind="captions" src="assets/videos/cambios-explicados.es.vtt"
+            srclang="es" label="Subtítulos en español" default>
+          <track kind="descriptions" src="assets/videos/cambios-explicados.descripcion.es.vtt"
+            srclang="es" label="Descripción visual en español">
+          Tu navegador no admite la reproducción de vídeo.
+        </video>
+        <figcaption>Resumen visual de las mejoras de la aplicación.</figcaption>
+      </figure>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
 <ion-content class="ion-padding">
 
+  <!-- CAMBIO: INFORMA VISUALMENTE DE LA CARGA INICIAL DESDE FIREBASE. -->
+  @if (cargando()) {
+  <ion-item lines="none" color="light" style="border-radius: 8px;">
+    <ion-spinner slot="start" name="crescent"></ion-spinner>
+    <ion-label>{{ estadoCarga() }}</ion-label>
+  </ion-item>
+  } @else if (!hayDatos()) {
   <!-- Añadir mensaje cuando no hay datos -->
-  @if (!hayDatos()) {
-    <ion-item lines="none" color="light" style="border-radius: 8px;">
-      <ion-label class="ion-text-wrap">
-        Pulsa <strong>Cargar datos</strong> para ver los restaurantes disponibles.
-        Una vez cargados, podrás filtrar por nombre, territorio y localidad.
-      </ion-label>
-    </ion-item>
+  <ion-item lines="none" color="light" style="border-radius: 8px;">
+    <ion-label class="ion-text-wrap">
+      Pulsa <strong>Cargar datos</strong> para ver los restaurantes disponibles.
+      Una vez cargados, podrás filtrar por nombre, territorio y localidad.
+    </ion-label>
+  </ion-item>
   }
 
   <!-- Filtros -->
@@ -49,13 +101,13 @@
       <!-- Filtro de búsqueda -->
       <ion-col size="12" size-md="3">
         <ion-item>
-          <ion-input
-            label="Buscar"
-            placeholder="Buscar por nombre..."
-            [value]="textoBusqueda()"
-            [disabled]="!hayDatos()"
-            (ionInput)="textoBusqueda.set($event.detail.value ?? '')">
+          <ion-input label="Buscar" placeholder="Buscar por nombre..." [value]="textoBusqueda()"
+            [disabled]="!hayDatos()" (ionInput)="textoBusqueda.set($event.detail.value ?? '')">
           </ion-input>
+          <ion-button slot="end" fill="clear" title="Limpiar búsqueda" aria-label="Limpiar búsqueda"
+            [disabled]="!textoBusqueda()" (click)="eliminarTextoBusqueda()">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-col>
 
@@ -67,17 +119,22 @@
           -->
         <!--<ion-label>Territorio</ion-label>-->
         <ion-item>
-          <ion-select
-            label="Territorio"
-            labelPlacement="start"
-            placeholder="Todos"
-            [value]="territorioSeleccionado()"
-            [disabled]="!hayDatos()"
-            (ionChange)="onTerritorioChange($event.detail.value)">
+          <ion-select label="Territorio" labelPlacement="start" placeholder="Todos" [value]="territorioSeleccionado()"
+            [disabled]="!hayDatos()" (ionChange)="onTerritorioChange($event.detail.value)">
             @for (t of territoriosFiltrados(); track t) {
-              <ion-select-option [value]="t">{{ t }}</ion-select-option>
+            <ion-select-option [value]="t">{{ t }}</ion-select-option>
             }
           </ion-select>
+          <ion-button slot="end" fill="clear" title="Quita primero las localidades para limpiar el territorio"
+            aria-label="Limpiar territorio"
+            [disabled]="!territorioSeleccionado() || localidadesSeleccionadas().length > 0"
+            (click)="eliminarTerritorio()">
+            @if (localidadesSeleccionadas().length > 0 && territorioSeleccionado()) {
+            <ion-icon name="lock-closed-outline"></ion-icon>
+            } @else {
+            <ion-icon name="close-circle-outline"></ion-icon>
+            }
+          </ion-button>
         </ion-item>
       </ion-col>
 
@@ -89,103 +146,178 @@
           -->
         <!--Si tenemos muchas localidades seleccionadas, estas se recortan mediante..., por eso añadimos [title] para mostrar un tooltip cuando ponemos el ratón sobre ella -->
         <!--<ion-label>Localidad</ion-label>-->
-        <ion-item>          
-          <ion-select
-            label="Localidad"
-            labelPlacement="start"
-            placeholder="Todas"
-            multiple="true"
-            cancelText="Cancelar"
-            okText="Aceptar"
-            [value]="localidadesSeleccionadas()"
+        <ion-item>
+          <ion-select label="Localidad" labelPlacement="start" placeholder="Todas" multiple="true" cancelText="Cancelar"
+            okText="Aceptar" [value]="localidadesSeleccionadas()"
             [title]="localidadesSeleccionadas().length > 0 ? localidadesSeleccionadas().join(', ') : 'Todas'"
-            [disabled]="!hayDatos()"
-            (ionChange)="onLocalidadesChange($event.detail.value)">
+            [disabled]="!hayDatos()" (ionChange)="onLocalidadesChange($event.detail.value)">
             @for (loc of localidadesFiltradasPorTerritorio(); track loc) {
-              <ion-select-option [value]="loc">{{ loc }}</ion-select-option>
+            <ion-select-option [value]="loc">{{ loc }}</ion-select-option>
             }
           </ion-select>
+          <ion-button slot="end" fill="clear" title="Limpiar localidades" aria-label="Limpiar localidades"
+            [disabled]="localidadesSeleccionadas().length === 0" (click)="limpiarLocalidades()">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </ion-button>
         </ion-item>
       </ion-col>
     </ion-row>
   </ion-grid>
 
+  <!-- CAMBIO: MUESTRA LOS FILTROS ACTIVOS COMO CHIPS ELIMINABLES Y OFRECE LIMPIARLOS TODOS. -->
+  @if (hayFiltrosActivos()) {
+  <div class="filtros-activos" aria-label="Filtros activos">
+    <i class="fa-brands fa-sistrix"></i>
+    @if (textoBusqueda()) {
+    <ion-chip (click)="eliminarTextoBusqueda()" title="Quitar filtro de búsqueda">
+      <i class="fa-brands fa-sistrix"></i> <ion-label> Buscar: {{ textoBusqueda() }}</ion-label>
+      <ion-icon name="close-circle-outline"></ion-icon>
+    </ion-chip>
+    }
+    @if (territorioSeleccionado()) {
+    <ion-chip [disabled]="localidadesSeleccionadas().length > 0" [title]="localidadesSeleccionadas().length > 0
+            ? 'Quita las localidades antes de limpiar el territorio'
+            : 'Quitar filtro de territorio'" (click)="eliminarTerritorio()">
+      <i class="fa-solid fa-location-dot"></i><ion-label>Territorio: {{ territorioSeleccionado() }}</ion-label>
+      @if (localidadesSeleccionadas().length > 0) {
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      } @else {
+      <ion-icon name="close-circle-outline"></ion-icon>
+      }
+    </ion-chip>
+    }
+    @for (localidad of localidadesSeleccionadas(); track localidad) {
+    <ion-chip (click)="eliminarLocalidad(localidad)" [title]="'Quitar localidad ' + localidad">
+      <ion-label>Localidad: {{ localidad }}</ion-label>
+      <ion-icon name="close-circle-outline"></ion-icon>
+
+
+    </ion-chip>
+    }
+    <!-- CAMBIO: AÑADE UNA X PARA ELIMINAR TODOS LOS FILTROS ACTIVOS. -->
+    <span class="limpiar-filtros" role="button" tabindex="0" title="Limpiar todos los filtros"
+      aria-label="Limpiar todos los filtros" (click)="limpiarTodosFiltros()" (keydown.enter)="limpiarTodosFiltros()"
+      (keydown.space)="$event.preventDefault(); limpiarTodosFiltros()">
+      X
+    </span>
+  </div>
+  }
+
   <!-- Contador de restaurantes filtrados -->
   @if (hayDatos()) {
-    <ion-item lines="none">
-      <ion-label>
-        Mostrando <strong>{{ restaurantesFiltrados().length }}</strong>
-        de <strong>{{ restaurantesCargados().length }}</strong> restaurantes
-        @if (restaurantesFiltrados().length === 0 && hayFiltrosActivos()) {
-          · <em>Prueba a cambiar los filtros</em>
-        }
-      </ion-label>
-    </ion-item>
+  <ion-item lines="none">
+    <ion-label>
+      Mostrando <strong>{{ restaurantesFiltrados().length }}</strong>
+      de <strong>{{ restaurantesCargados().length }}</strong> restaurantes
+      @if (restaurantesFiltrados().length === 0 && hayFiltrosActivos()) {
+      · <em>Prueba a cambiar los filtros</em>
+      }
+    </ion-label>
+  </ion-item>
   }
 
   <!-- Tabla de restaurantes -->
   @if (restaurantesFiltrados().length > 0) {
-    <div class="table-wrapper">
-      <table class="restaurantes-table">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Localidad</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Territorio</th>
-            <th>Web</th>
-            <th>Estrellas Michelin</th>
-            <th>Soles Repsol</th>
-            <th>Borrar</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of restaurantesFiltrados(); track r.documentName) {
-            <tr>
-              <td class="col-nombre">{{ r.documentName }}</td>
-              <td>{{ r.locality }}</td>
-              <td class="col-direccion">{{ r.address }}</td>
-              <td class="col-phone">{{ r.phone }}</td>
-              <td>{{ r.territory }}</td>
-              <td class="center">
-                @if (r.web) {
-                  <a [href]="r.web" target="_blank" [title]="r.web" class="web-link">
-                    Enlace
-                  </a>
-                }
-              </td>
-              <td class="center">
-                {{ estrellasMichelin(r) > 0 ? estrellasMichelin(r) : '-' }}
-              </td>
-              <td class="center">
-                {{ repsolSoles(r) > 0 ? repsolSoles(r) : '-' }}
-              </td>
-              <td class="center">
-                <ion-button fill="clear" color="danger" size="small"
-                  title="Borrar restaurante"
-                  (click)="borrarRestaurante(r)">
-                  Borrar
-                </ion-button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <div class="table-wrapper" role="region" tabindex="0"
+    aria-label="Tabla de restaurantes. Desplázate horizontalmente para ver todas las columnas.">
+    <table class="restaurantes-table">
+      <thead>
+        <tr>
+          <!-- CAMBIO: PERMITE ORDENAR COLUMNAS Y MUESTRA LA DIRECCIÓN ACTIVA. -->
+          <th
+            [attr.aria-sort]="sortColumna() === 'documentName' ? (sortDireccion() === 'asc' ? 'ascending' : 'descending') : 'none'">
+            <button type="button" class="sort-button" (click)="cambiarOrden('documentName')">
+              Nombre <ion-icon [name]="iconoOrden('documentName')"></ion-icon>
+            </button>
+          </th>
+          <th
+            [attr.aria-sort]="sortColumna() === 'locality' ? (sortDireccion() === 'asc' ? 'ascending' : 'descending') : 'none'">
+            <button type="button" class="sort-button" (click)="cambiarOrden('locality')">
+              Localidad <ion-icon [name]="iconoOrden('locality')"></ion-icon>
+            </button>
+          </th>
+          <th>Dirección</th>
+          <th>Teléfono</th>
+          <th
+            [attr.aria-sort]="sortColumna() === 'territory' ? (sortDireccion() === 'asc' ? 'ascending' : 'descending') : 'none'">
+            <button type="button" class="sort-button" (click)="cambiarOrden('territory')">
+              Territorio <ion-icon [name]="iconoOrden('territory')"></ion-icon>
+            </button>
+          </th>
+          <th>Web</th>
+          <th
+            [attr.aria-sort]="sortColumna() === 'michelinStar' ? (sortDireccion() === 'asc' ? 'ascending' : 'descending') : 'none'">
+            <button type="button" class="sort-button" (click)="cambiarOrden('michelinStar')">
+              Estrellas Michelin <ion-icon [name]="iconoOrden('michelinStar')"></ion-icon>
+            </button>
+          </th>
+          <th
+            [attr.aria-sort]="sortColumna() === 'repsolSun' ? (sortDireccion() === 'asc' ? 'ascending' : 'descending') : 'none'">
+            <button type="button" class="sort-button" (click)="cambiarOrden('repsolSun')">
+              Soles Repsol <ion-icon [name]="iconoOrden('repsolSun')"></ion-icon>
+            </button>
+          </th>
+          <th>Borrar</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of restaurantesFiltrados(); track r.documentName) {
+        <tr>
+          <td class="col-nombre">{{ r.documentName }}</td>
+          <td>{{ r.locality }}</td>
+          <td class="col-direccion">{{ r.address }}</td>
+          <td class="col-phone">{{ r.phone }}</td>
+          <td>{{ r.territory }}</td>
+          <td class="center">
+            @if (r.web) {
+            <a [href]="r.web" target="_blank" rel="noopener noreferrer" [title]="'Abrir web: ' + r.web"
+              class="web-link">
+              <ion-icon name="globe-outline" aria-label="Abrir página web"></ion-icon>
+            </a>
+            }
+          </td>
+          <td class="center">
+            @if (estrellasMichelin(r) > 0) {
+            @for (estrella of rangoPremios(estrellasMichelin(r)); track estrella) {
+            <ion-icon name="star" color="warning" aria-label="Estrella Michelin"></ion-icon>
+            }
+            } @else {
+            -
+            }
+          </td>
+          <td class="center">
+            @if (repsolSoles(r) > 0) {
+            @for (sol of rangoPremios(repsolSoles(r)); track sol) {
+            <ion-icon name="sunny" color="warning" aria-label="Sol Repsol"></ion-icon>
+            }
+            } @else {
+            -
+            }
+          </td>
+          <td class="center">
+            <!-- CAMBIO: DESHABILITA EL BORRADO MIENTRAS HAYA OTRA OPERACIÓN ACTIVA. -->
+            <ion-button fill="clear" color="danger" size="small" title="Borrar restaurante"
+              [disabled]="cargando() || importando() || borrando()" (click)="borrarRestaurante(r)">
+              Borrar
+            </ion-button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
   } @else {
-    <!-- Mensaje cuando no hay restaurantes que coincidan con los filtros -->
-    @if (hayDatos()) {
-      <ion-item lines="none" color="warning" style="margin-top: 16px; border-radius: 8px;">
-        <ion-label class="ion-text-wrap">
-          Ningún restaurante coincide con los filtros.
-          <strong style="cursor: pointer; text-decoration: underline;"
-            (click)="limpiarTodosFiltros()">
-            Limpiar filtros
-          </strong>
-        </ion-label>
-      </ion-item>
-    }
+  <!-- Mensaje cuando no hay restaurantes que coincidan con los filtros -->
+  @if (hayDatos() && hayFiltrosActivos()) {
+  <ion-item lines="none" color="warning" style="margin-top: 16px; border-radius: 8px;">
+    <ion-label class="ion-text-wrap">
+      Ningún restaurante coincide con los filtros.
+    </ion-label>
+    <ion-button slot="end" fill="clear" (click)="limpiarTodosFiltros()">
+      Limpiar filtros
+    </ion-button>
+  </ion-item>
+  }
   }
 
 </ion-content>

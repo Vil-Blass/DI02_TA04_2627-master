@@ -25,13 +25,63 @@
 
 :host ::ng-deep {
 
+  .cabeza {
+    .nav_cabeza {
+      --min-height: 0;
+    }
+
+    .nav_cabeza::part(container) {
+      height: auto;
+      min-height: var(--min-height);
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 8px clamp(8px, 2vw, 24px);
+    }
+
+    .titulo_nav {
+      position: relative;
+      inset: auto;
+      transform: none;
+      flex: 1 1 320px;
+      width: auto;
+      min-width: 0;
+      padding-inline: 8px;
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.1rem, 2vw, 1.5rem);
+        line-height: 1.2;
+        white-space: normal;
+      }
+    }
+
+    ion-buttons[slot="end"] {
+      display: flex;
+      flex: 1 1 auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      min-width: 0;
+      margin: 0;
+    }
+  }
+
   .table-wrapper {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
     margin-top: 16px;
     border-radius: 12px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
     border: 1px solid #cccccc;
+
+    &:focus-visible {
+      outline: 2px solid var(--ion-color-primary);
+      outline-offset: 2px;
+    }
   }
 
   .restaurantes-table {
@@ -48,6 +98,21 @@
       background-color: #3880ff;
       color: #ffffff;
       border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .sort-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-weight: inherit;
+      cursor: pointer;
+
+      ion-icon { font-size: 16px; }
     }
 
     tbody tr {
@@ -100,6 +165,89 @@
     &:hover {
       color: #2d6fe0;
       transform: scale(1.2);
+    }
+
+  }
+
+  /* CAMBIO: DA ESTILO Y FOCO VISIBLE A LA X QUE LIMPIA LOS FILTROS. */
+  .filtros-activos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px 12px;
+
+    ion-chip:not([disabled]) { cursor: pointer; }
+
+    .limpiar-filtros {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      color: var(--ion-color-primary);
+      font-weight: 700;
+      cursor: pointer;
+
+      &:hover { background-color: var(--ion-color-light); }
+      &:focus-visible { outline: 2px solid var(--ion-color-primary); }
+    }
+
+    ion-chip {
+      max-width: 100%;
+
+      ion-label {
+        white-space: normal;
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  :host ::ng-deep {
+    .cabeza .titulo_nav {
+      flex-basis: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .cabeza ion-buttons[slot="end"] {
+      justify-content: center;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  :host ::ng-deep {
+    .cabeza ion-buttons[slot="end"] {
+      width: 100%;
+
+      ion-button {
+        flex: 1 1 135px;
+        min-width: 0;
+        margin-inline: 2px;
+      }
+
+      ion-select {
+        flex: 1 1 100%;
+        max-width: none;
+        text-align: center;
+      }
+    }
+
+    .table-wrapper {
+      margin-inline: -4px;
+      width: calc(100% + 8px);
+    }
+
+    .restaurantes-table {
+      font-size: 13px;
+
+      thead tr th,
+      tbody tr td {
+        padding: 9px 10px;
+      }
     }
   }
 }

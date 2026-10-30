@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:06.000
+Mejoras en la aplicación.
+Un recorrido por los cambios señalados en mayúsculas.
+Datos, operaciones, filtros y experiencia de uso.
+
+00:00:06.000 --> 00:00:12.000
+Carga y estados.
+La carga inicial de Firebase muestra su estado.
+Importar, borrar o cargar bloquea acciones incompatibles.
+Overlays y spinners indican qué está ocurriendo.
+
+00:00:12.000 --> 00:00:18.000
+Errores y avisos.
+Los errores se registran para facilitar el diagnóstico.
+Los avisos de error permanecen hasta cerrarlos.
+Los mensajes de éxito desaparecen a los 3 segundos.
+
+00:00:18.000 --> 00:00:24.000
+Borrado recuperable.
+Tras borrar un restaurante, se puede recuperar durante 6 segundos.
+La restauración conserva el ID original de Firestore.
+Así se evita crear documentos duplicados.
+
+00:00:24.000 --> 00:00:30.000
+Formulario.
+Estrellas Michelin y soles Repsol: enteros de 0 a 3.
+El formulario impide envíos duplicados mientras guarda.
+El botón muestra el estado y el modal ofrece cancelar.
+
+00:00:30.000 --> 00:00:36.000
+Filtros.
+Cada filtro activo aparece como un chip eliminable.
+La X permite limpiar todos los filtros de una vez.
+El control funciona con teclado y muestra el foco.
+
+00:00:36.000 --> 00:00:42.000
+Resultados.
+Pulsa una columna para ordenar los resultados.
+Vuelve a pulsarla para invertir el sentido.
+El icono y aria-sort reflejan el orden activo.
+
+00:00:42.000 --> 00:00:48.000
+Documentación.
+Un selector ofrece los PDF disponibles en la aplicación.
+Al elegir uno, se abre en una pestaña nueva.
+
+00:00:48.000 --> 00:00:54.000
+Detalles visuales.
+Se generan los elementos visuales de estrellas y soles.
+La presentación ayuda a interpretar las distinciones.
+
+00:00:54.000 --> 00:01:00.000
+Cierre.
+Operaciones coordinadas, errores visibles y recuperación.
+Filtros y resultados más cómodos de explorar.
+Cambios basados en las anotaciones CAMBIO del proyecto.

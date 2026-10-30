@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Generar guía PDF del proyecto",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"create-project-guide.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "Actualizar guía PDF",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"create-project-guide.js"
+			],
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
