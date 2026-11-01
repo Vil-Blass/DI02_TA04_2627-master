@@ -6,10 +6,12 @@
     </ion-title>
     <!-- CAMBIO: BLOQUEA LAS ACCIONES Y MUESTRA SPINNERS DURANTE LA CARGA O IMPORTACIÓN. -->
     <ion-buttons slot="end">
-      <ion-button (click)="videoAbierto.set(true)" title="Ver vídeo explicativo">
-        <ion-icon slot="start" name="videocam-outline"></ion-icon>
-        Ver vídeo
-      </ion-button>
+      <ion-select label="Ver vídeo" placeholder="Selecciona un vídeo"
+        (ionChange)="abrirVideo($event.detail.value)">
+        @for (video of videos; track video.url) {
+        <ion-select-option [value]="video.url">{{ video.nombre }}</ion-select-option>
+        }
+      </ion-select>
 
       <!-- CAMBIO: PERMITE ELEGIR Y ABRIR UNO DE LOS PDF DISPONIBLES. -->
       <ion-select label="Ver PDF" placeholder="Selecciona un documento" (ionChange)="verPDF($event.detail.value)">
@@ -64,7 +66,7 @@
     <ion-content class="ion-padding">
       <figure class="video-player">
         <video #videoPlayer controls aria-label="Vídeo explicativo de los cambios de la aplicación">
-          <source [src]="video" type="video/mp4">
+          <source [src]="videoSeleccionado()" type="video/mp4">
           <track kind="captions" src="assets/videos/cambios-explicados.es.vtt"
             srclang="es" label="Subtítulos en español" default>
           <track kind="descriptions" src="assets/videos/cambios-explicados.descripcion.es.vtt"

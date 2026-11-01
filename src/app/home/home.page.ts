@@ -23,9 +23,14 @@ export class HomePage {
     { nombre: 'Mejoras de usabilidad', url: 'assets/pdfs/Chat_mejoras_usabilidad.pdf' },
     { nombre: 'Chat', url: 'assets/pdfs/Chat.pdf' },
     { nombre: 'Guía de proyecto', url: 'assets/pdfs/guia-proyecto-restaurantes.pdf ' },
-    
+
   ];
-  video = 'assets/videos/cambios-explicados.mp4';
+  readonly videos = [
+    { nombre: 'Vídeo explicativo', url: 'assets/videos/cambios-explicados.mp4' },
+    { nombre: 'video de la tarea ', url: 'assets/videos/videoDeLaTareaEv.mp4' },
+
+  ];
+  videoSeleccionado = signal(this.videos[0].url);
   videoAbierto = signal(false);
 
   @ViewChild('videoPlayer') private videoPlayer?: ElementRef<HTMLVideoElement>;
@@ -64,6 +69,11 @@ export class HomePage {
   cerrarVideo() {
     this.videoPlayer?.nativeElement.pause();
     this.videoAbierto.set(false);
+  }
+
+  abrirVideo(url: string) {
+    this.videoSeleccionado.set(url);
+    this.videoAbierto.set(true);
   }
 
   // Carga los restaurantes desde Firebase y muestra un toast de confirmación
@@ -218,11 +228,11 @@ export class HomePage {
     await toast.present();
   }
 
-  // CAMBIO: PERMITE RECUPERAR UN RESTAURANTE DURANTE 6 SEGUNDOS TRAS BORRARLO.
+  // CAMBIO: PERMITE RECUPERAR UN RESTAURANTE DURANTE 10 SEGUNDOS TRAS BORRARLO.
   private async mostrarToastConDeshacer(restaurante: Restaurante) {
     const toast = await this.toastCtrl.create({
       message: `${restaurante.documentName} eliminado`,
-      duration: 6000,
+      duration: 10000,
       color: 'success',
       position: 'bottom',
       buttons: [
